@@ -1,0 +1,56 @@
+<div class="card ">
+	<div class="card-body">
+ <table class="table  ">
+ <col >
+ <col width="1%">
+ <col >
+ <tr>
+ <th>Nama Perusahaan</th>
+ <td>:</td>
+ <td><?php echo static::e($transaksi['data_client']['nama_perusahaan']); ?></td>
+ </tr>
+ <tr>
+ <th>Periode</th>
+ <td>:</td>
+ <td><?php echo static::e($transaksi['periode_readable']); ?></td>
+ </tr>
+ <tr>
+ <th>Status Transaksi</th>
+ <td>:</td>
+ <td><?php echo static::e($transaksi['data_status_transaksi']['status']); ?></td>
+ </tr>
+ 
+
+ </table>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-body">
+ <table class="table table-striped">
+ <thead>
+ <tr>
+ <th>Tanggal</th>
+ <th>Meteran Awal</th>
+ <th>Pemakaian</th>
+ <th>Meteran Akhir</th>
+ </tr>
+ </thead>
+ <tbody>
+ <?php $__currentLoopData = $transaksi['detail_transaksi']; $this->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <tr>
+ <td><?php echo static::e($detail['tanggal_dmy']); ?></td>
+ <td><?php echo static::e($detail['awal']); ?></td>
+ <td><?php echo static::e($detail['pemakaian']); ?></td>
+ <td><?php echo static::e($detail['akhir']); ?></td>
+ </tr>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </tbody>
+ </table>
+	</div>
+</div>
+</div>
+
+
+
+

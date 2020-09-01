@@ -1,0 +1,155 @@
+<?php $_shouldextend[1]=1; ?>
+<?php $this->startSection('css-export'); ?>
+<link rel="stylesheet" href="<?php echo static::e(base_url("assets/modules/datatables/datatables.min.css")); ?>">
+<link rel="stylesheet" href="<?php echo static::e(base_url("assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css")); ?>">
+
+
+<?php $this->stopSection(); ?>
+<?php $this->startSection('content'); ?>
+<section class="section">
+	<div class="section-header">
+ <h1>Laporan</h1>
+ 
+	</div>
+
+	<div class="section-body">
+ <div class="row">
+ <div class="col-md-12">
+ <div class="card">
+ 
+ <div class="card-body">
+ <div class="form-group row mb-4">
+ <label class="col-form-label text-md-right col-12 col-md-3 col-lg-4">Instansi</label>
+ <div class="col-sm-12 col-md-5">
+ <select name="status_instansi" id="status_instansi" class="form-control">
+ <option value="">Semua Status</option>
+ <?php $__currentLoopData = hStatusInstansi(); $this->addLoop($__currentLoopData); foreach($__currentLoopData as $instansi => $hak): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option value="<?php echo static::e($instansi); ?>"><?php echo static::e($instansi); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ </div>
+ </div>
+ <div class="form-group row mb-4">
+ <label class="col-form-label text-md-right col-12 col-md-3 col-lg-4">Hak</label>
+ <div class="col-sm-12 col-md-5">
+ <select name="jenis_hak" id="jenis_hak" class="form-control">
+ <option value="">Semua Hak</option>
+ <?php $__currentLoopData = hStatusInstansi(); $this->addLoop($__currentLoopData); foreach($__currentLoopData as $instansi => $dataHak): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <?php $__currentLoopData = $dataHak; $this->addLoop($__currentLoopData); foreach($__currentLoopData as $hak): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option  data-chained="<?php echo static::e($instansi); ?>" value="<?php echo static::e($hak); ?>"><?php echo static::e($hak); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ </div>
+ </div>
+ <div class="form-group row mb-4">
+ <label class="col-form-label text-md-right col-12 col-md-3 col-lg-4">Tanggal Masuk Mulai</label>
+ <div class="col-sm-12 col-md-5">
+ <input type="text" id="start_date"  name="start_date" class="form-control ">
+ </div>
+ </div>
+ <div class="form-group row mb-4">
+ <label class="col-form-label text-md-right col-12 col-md-3 col-lg-4">Tanggal Masuk Sampai </label>
+ <div class="col-sm-12 col-md-5">
+ <input type="text" id="end_date" name="end_date" class="form-control ">
+ 
+ </div>
+ </div>
+ 
+ 
+ <div class="form-group row mb-4">
+ <label class="col-form-label text-md-right col-12 col-md-3 col-lg-4"></label>
+ <div class="col-sm-12 col-md-5">
+ <button class="btn btn-primary " type="button" id="btn-generate">Generate</button>
+ </div>
+ </div>
+ 
+
+ 
+
+ </div>
+ <div class="card-body">
+ <div id="print-area">
+ 
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+	</section>
+
+	<?php $this->stopSection(); ?>
+	<?php $this->startSection('js-export'); ?>
+
+	<?php $this->startSection('js-inline'); ?>
+	<script>
+ let $btnGenerate = null;
+
+ let iStatusInstansi = null;
+ let iJenisHak = null;
+ let iStartDate = null;
+ let iEndDate = null;
+
+ $(function() {
+ $btnGenerate = $("#btn-generate");
+ iStatusInstansi = $("#status_instansi");
+ iJenisHak = $("#jenis_hak");
+ iStartDate = $("#start_date");
+ iEndDate = $("#end_date");
+
+ $("#jenis_hak").chained("#status_instansi");
+
+ 
+ 
+ iStartDate.daterangepicker({
+ singleDatePicker: true,
+ showDropdowns: true,
+ locale: {
+ format: 'DD-MM-YYYY'
+ },
+ }, function(start, end, label) {
+ iEndDate.daterangepicker({
+ singleDatePicker: true,
+ showDropdowns: true,
+ minDate: start,
+ locale: {
+ format: 'DD-MM-YYYY'
+ },
+
+
+ });
+ });
+
+ iEndDate.daterangepicker({
+ singleDatePicker: true,
+ showDropdowns: true,
+ locale: {
+ format: 'DD-MM-YYYY'
+ },
+ minDate: iStartDate.val(),
+ 
+
+ });
+
+
+
+
+
+ $btnGenerate.click(function(e) {
+ formData = {
+ status_instansi: iStatusInstansi.val(),
+ jenis_hak: iJenisHak.val(),
+ start_date: iStartDate.val(),
+ end_date: iEndDate.val(),
+ };
+
+ data = Object.keys(formData).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(formData[key])).join('&');
+ encoded = btoa(data);			
+ url = "<?php echo static::e(base_url('laporan/generateLaporan?x=')); ?>"+encoded;
+ window.open(url, "_blank");
+
+ });
+ });
+	</script>
+	<?php $this->stopSection(); ?>
+<?php if (@$_shouldextend[1]) { echo $this->runChild('layouts.layout'); } ?>

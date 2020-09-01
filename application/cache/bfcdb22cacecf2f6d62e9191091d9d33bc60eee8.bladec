@@ -1,0 +1,75 @@
+<?php
+$arrBelum = ['belum_periode_ini', 'belum_periode_sebelumnya'];
+$arrPending = ['pending_periode_ini','pending_periode_sebelumnya'];
+?>
+<?php if ($is_ada): ?>
+	<div class="form-group" id="html-history" >
+ <label>
+ History Transaksi Terakhir
+ </label>
+ <table class="table no-border">
+ <col width="20%">
+ <col width="2%">
+
+ <tr>
+ <td>Nama Perusahaan</td>
+ <td>:</td>
+ <td><span id="nama_perusahaan"><?php echo $data_perusahaan['nama_perusahaan'] ?></span></td>
+ </tr>
+ <tr>
+ <td>Periode Transaksi</td>
+ <td>:</td>
+ <td><span id="bulan_terakhir"><?php echo $last_transaction['bulan_huruf'] ?></span> <span id="tahun_terakhir"><?php echo $last_transaction['tahun'] ?></span></td>
+ </tr>
+
+ <tr>
+ <td>Status Transaksi</td>
+ <td>:</td>
+ <td><span id="tahapan_terakhir"><?php echo $last_transaction['status_message'] ?></span></td>
+ </tr>
+ </table>
+	</div>
+	
+
+	<?php if (in_array($status, $arrBelum)): ?>
+ <div class="form-group" id="html-periode-ini" >
+ <label>
+ Transaksi Periode Selanjutnya
+ </label>
+ <table class="table no-border">
+ <col width="20%">
+ <col width="2%">
+ <tr>
+ <td>Periode Transaksi</td>
+ <td>:</td>
+ <td><span id="bulan_selanjutnya"><?php echo $next_transaction['bulan_huruf'] ?></span> <span id="tahun_selanjutnya"><?php echo $next_transaction['tahun'] ?></span></td>
+ </tr>
+
+ <tr id="html-button-add">
+ <td></td>
+ <td></td>
+ </tr>
+ </table>
+ </div>
+ <button type="button" onclick="location.href='<?php echo base_url('transaksi/tambah/'.$client_id) ?>'" class="btn btn-primary btn-tambah">Tambah Transaksi</button>
+
+ <?php elseif (in_array($status, $arrPending)): ?>
+ <button type="button" class="btn btn-warning btn-update">Update Transaksi</button>
+
+ <?php endif?>
+
+
+ <?php elseif (!$is_ada): ?>
+ <h1>Belum ada data</h1>
+ <button class="btn btn-primary btn-tambah" type="button">Tambah Transaksi</button>
+ <?php endif?>
+
+
+ <script>
+ $(function() {
+ $(".btn-update").click(function(e) {
+
+ window.location.href= "<?php echo base_url('transaksi/ubah/').$client_id ?>";
+ });
+ });
+ </script>

@@ -1,0 +1,301 @@
+<?php $_shouldextend[1]=1; ?>
+<?php $this->startSection('css-export'); ?>
+<link rel="stylesheet" href="<?php echo static::e(base_url("assets/modules/datatables/datatables.min.css")); ?>">
+<link rel="stylesheet" href="<?php echo static::e(base_url("assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css")); ?>">
+<link rel="stylesheet" href="<?php echo static::e(base_url("assets/modules/prism/prism.css")); ?>">
+<style>
+	.highcharts-tooltip>span {
+ max-height: 500px;
+ overflow-y: auto;
+	}
+
+	.highcharts-tooltip {
+ pointer-events: auto !important;
+	}
+
+</style>
+<?php $this->stopSection(); ?>
+<?php $this->startSection('content'); ?>
+<section class="section">
+	<div class="section-header">
+ <h1>Data Treemap</h1>
+ <div class="section-header-breadcrumb">
+ <div class="form-inline" >
+ <input type="number" class="form-control mb-2 mr-sm-2" name="tahun" placeholder="Default Tahun: <?php echo static::e(date('Y')); ?>">
+ <select name="jk" id="" class="form-control mb-2 mr-sm-2">
+ <option value="LP">Semua Jenis Kelamin</option>
+ <?php $__currentLoopData = hJK(); $this->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option value="<?php echo static::e($k); ?>"><?php echo static::e($v); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+
+ <select name="usia" id="" class="form-control mb-2 mr-sm-2">
+ <?php $__currentLoopData = hUsia(); $this->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option value="<?php echo static::e($k); ?>"><?php echo static::e($v); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ <select name="status" id="" class="form-control mb-2 mr-sm-2">
+ <option value="0">Semua Status</option>
+ <?php $__currentLoopData = hStatusJemaah(); $this->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option value="<?php echo static::e($k); ?>"><?php echo static::e($v); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ 
+ <select name="top" id="" class="form-control mb-2 mr-sm-2">
+ <?php $__currentLoopData = hTopBesar(); $this->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option value="<?php echo static::e($k); ?>"><?php echo static::e($v); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+
+
+ </div>
+ <a href="javascript:void(0)" class="btn btn-outline-primary" id="btn-update">Update Data</a>
+ <div class="breadcrumb-item active"></div>
+ </div>
+	</div>
+
+	<div class="row">
+ <div class="col-12">
+ <div class="card">
+
+ <div class="card-body">
+ <button id="btn-back"><<</button>
+ <figure class="highcharts-figure">
+
+ <div id="container"></div>
+ 
+ </figure>
+ </div>
+ </div>
+ </div>
+	</div>
+
+
+
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="modalDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	<div class="modal-dialog  modal-lg" role="document">
+ <div class="modal-content">
+ <div class="modal-header">
+ <h5 class="modal-title" id="exampleModalLongTitle">Detail</h5>
+ <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+ <span aria-hidden="true">&times;</span>
+ </button>
+ </div>
+ <div class="modal-body">
+ <div id="content-peserta">
+
+ </div>
+ </div>
+ <div class="modal-footer"></div>
+ </div>
+	</div>
+</div>
+
+<?php $this->stopSection(); ?>
+<?php $this->startSection('js-export'); ?>
+<script src="<?php echo static::e(base_url("assets/modules/highcharts/highcharts.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/highcharts/modules/data.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/highcharts/modules/heatmap.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/highcharts/modules/treemap.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/highcharts/modules/offline-exporting.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/highcharts/modules/accessibility.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/highcharts/modules/boost.js")); ?>"></script>
+
+<?php $this->stopSection(); ?>
+<?php $this->startSection('js-inline'); ?>
+<script>
+	var insHighchart = null;
+	var points = null;
+	var previousLink = [];
+	var idnya = null;
+	$(function() {
+ 
+ generateHighTreemap()
+ .then(resp => {
+ insHighchart = resp;
+ insHighchart.showLoading();
+ fetchData("").then(r =>
+ {
+ points = r;
+ dataSet = points.filter(function($el) {
+ return $el.parentt == "";
+ });
+
+ insHighchart.series[0].setData(dataSet);
+ insHighchart.hideLoading();
+
+ });
+ 
+ });
+
+
+
+ $("#btn-back").click(function(event) {
+ if (previousLink.length <= 0) {
+ return;
+ }
+ idnya = previousLink.pop();
+ var dataSet = points.filter(function(ee) {
+ return ee.parentt == idnya;
+ });
+
+ insHighchart.series[0].update({data:dataSet});
+ insHighchart.hideLoading();
+ if (dataSet.length > 0 ) {
+
+
+ }
+ });
+
+ $("#btn-update").click(function(e) {
+ previousLink = [];
+
+ var tahun = $("input[name='tahun']").val() || "<?php echo static::e(date('Y')); ?>";
+ var usia = $("select[name='usia']").val();
+ var jk = $("select[name='jk']").val();
+ var top = $("select[name='top']").val();
+ var status = $("select[name='status']").val();
+ post = {
+ tahun,
+ usia,
+ jk,
+ top,
+ status
+ };
+
+ post = Object.keys(post).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(post[key])).join('&')
+
+ insHighchart.showLoading();
+ fetchData(post).then(r =>
+ {
+ points = r;
+ dataSet = points.filter(function($el) {
+ return $el.parentt == "";
+ });
+
+ insHighchart.series[0].setData(dataSet);
+ insHighchart.hideLoading();
+
+ }
+ );
+ 
+ });
+
+
+	});
+
+	function generateHighTreemap() {
+ 
+ return new Promise((resolve, reject) => {
+ var options = {
+ series: [{
+ type: 'treemap',
+ alternateStartingDirection: false,
+ opacity: 0.05,
+ layoutAlgorithm: 'squarified',
+ allowDrillToNode: true,
+ animation:true,
+ dataLabels: {
+ enabled: false,
+ style: {
+ fontSize: "14px",
+ textOutline: 0
+
+
+ }
+ },
+
+ levelIsConstant: true,
+ levels: [{
+ level: 1,
+ dataLabels: {
+ enabled: true,
+ },
+ borderWidth: 1,
+ borderColor: "black",
+ }
+ ],
+ borderWidth: 0.05,
+ borderColor: "black",
+
+ data:[],
+ point: {
+ events: {
+ click: function(e) {
+ id = this.id;
+ parentt = this.parentt;
+ var dataSet = points.filter(function(ee) {
+ return ee.parentt == this.id;
+ });
+
+ if (dataSet.length > 0 ) {
+ previousLink.push(this.parentt);
+
+ insHighchart.series[0].update({data:dataSet});
+ insHighchart.hideLoading();
+
+ }
+
+ if (this.isi == 'yy') {
+ $("#content-peserta").html(this.description);
+ $("#modalDetail").modal('show');
+ }
+
+
+ }
+ }
+ }
+ }],
+
+
+ tooltip: {
+ style: {
+ fontSize: "16px",
+ 'z-index': '9999',
+ },
+ useHTML: true,
+ borderRadius: 1,
+ hideDelay:"0",
+ backgroundColor: "#FFFFFF",
+
+ borderColor: '#AAA',
+ formatter: function () {
+ if (this.point.isi == "n") {
+ return false;
+ }
+ else if (this.point.isi == "yy") {
+ return false;
+
+ } else
+ return this.point.description+' ';
+
+ }
+ },
+
+ title: {
+ text: ''
+ },
+
+
+ };
+ const chart = Highcharts.chart('container', options);
+ resolve(chart);
+ });
+
+	}
+
+
+	async function fetchData(values) {
+ var url = "<?php echo static::e(base_url('testtreemap/map?')); ?>"+values;
+ const response = await fetch(url, {
+ method: 'GET',
+ });
+ return await response.json();
+	}
+
+</script>
+<?php $this->stopSection(); ?>
+<?php if (@$_shouldextend[1]) { echo $this->runChild('layouts.layout'); } ?>

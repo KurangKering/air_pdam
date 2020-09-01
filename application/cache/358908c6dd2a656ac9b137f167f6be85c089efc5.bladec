@@ -1,0 +1,380 @@
+<?php $_shouldextend[1]=1; ?>
+<?php $this->startSection('css-export'); ?>
+<link rel="stylesheet" href="<?php echo static::e(base_url("assets/modules/datatables/datatables.min.css")); ?>">
+<link rel="stylesheet" href="<?php echo static::e(base_url("assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css")); ?>">
+<link rel="stylesheet" href="<?php echo static::e(base_url("assets/modules/prism/prism.css")); ?>">
+
+<?php $this->stopSection(); ?>
+<?php $this->startSection('content'); ?>
+<section class="section">
+	<div class="section-header">
+ <h1>Data Kesakitan</h1>
+ <div class="section-header-breadcrumb">
+ <div class="breadcrumb-item active">
+ <a href="javascript:void(0)" class="btn btn-outline-primary" id="button-tambah">Tambah Data Kesakitan</a>
+
+ </div>
+ </div>
+	</div>
+
+	<div class="row">
+ <div class="col-12">
+ <div class="card">
+
+ <div class="card-body">
+ <div class="table-responsive">
+ <table class="table table-hover table-striped" id="table-kesakitan">
+ <thead>                                 
+ <tr>
+ <th rowspan="2">Periode</th>
+ <th rowspan="2" class="text-center">
+ Kode Penyakit
+ </th>
+ <th rowspan="2">Menular/Tidak</th>
+ <th rowspan="2">Golongan Sebab Sakit</th>
+ <th rowspan="2">Puskesmas</th>
+ <th colspan="2">B</th>
+ <th colspan="2">L</th>
+ <th rowspan="2">Action</th>
+ </tr>
+ <tr>
+ <th>L</th>
+ <th>P</th>
+ <th>L</th>
+ <th>P</th>
+ </tr>
+ </thead>
+ <tbody>
+
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ </div>
+	</div>
+
+
+
+</section>
+<form class="modal-part" id="form-kesakitan">
+	<div class="error-display">
+ 
+	</div>
+	<div class="form-group">
+ <label>Bulan</label>
+ <div class="input-group">
+ <div class="input-group-prepend">
+ <div class="input-group-text">
+ <i class="fas fa-envelope"></i>
+ </div>
+ </div>
+ <select name="bulan"  class="form-control">
+ <?php $__currentLoopData = $data['bulan']; $this->addLoop($__currentLoopData); foreach($__currentLoopData as $kb => $bulan): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option value="<?php echo static::e($kb); ?>"><?php echo static::e($bulan); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ </div>
+	</div>
+	<div class="form-group">
+ <label>Tahun</label>
+ <div class="input-group">
+ <div class="input-group-prepend">
+ <div class="input-group-text">
+ <i class="fas fa-envelope"></i>
+ </div>
+ </div>
+ <input type="text" class="form-control"  name="tahun" value="<?php echo static::e('2017'); ?>">
+ </div>
+	</div>
+	<div class="form-group">
+ <label>Puskesmas</label>
+ <div class="input-group">
+ <div class="input-group-prepend">
+ <div class="input-group-text">
+ <i class="fas fa-envelope"></i>
+ </div>
+ </div>
+ <select name="puskesmas"  class="form-control">
+ <?php $__currentLoopData = $data['puskesmas']; $this->addLoop($__currentLoopData); foreach($__currentLoopData as $puskesmas): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option value="<?php echo static::e($puskesmas->puskesmas_id); ?>"><?php echo static::e($puskesmas->puskesmas_nama); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ </div>
+	</div>
+	<div class="form-group">
+ <label>Penyakit</label>
+ <div class="input-group">
+ <div class="input-group-prepend">
+ <div class="input-group-text">
+ <i class="fas fa-envelope"></i>
+ </div>
+ </div>
+ <select name="penyakit"  class="form-control">
+ <?php $__currentLoopData = $data['penyakit']; $this->addLoop($__currentLoopData); foreach($__currentLoopData as $penyakit): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <option value="<?php echo static::e($penyakit->penyakit_id); ?>"><?php echo static::e($penyakit->penyakit_nama); ?></option>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </select>
+ </div>
+	</div>
+	<div class="form-group">
+ <label>BL</label>
+ <div class="input-group">
+ <div class="input-group-prepend">
+ <div class="input-group-text">
+ <i class="fas fa-envelope"></i>
+ </div>
+ </div>
+ <input type="text" class="form-control" name="BL">
+ </div>
+	</div>
+	<div class="form-group">
+ <label>BP</label>
+ <div class="input-group">
+ <div class="input-group-prepend">
+ <div class="input-group-text">
+ <i class="fas fa-envelope"></i>
+ </div>
+ </div>
+ <input type="text" class="form-control" name="BL">
+ </div>
+	</div>
+	<div class="form-group">
+ <label>LL</label>
+ <div class="input-group">
+ <div class="input-group-prepend">
+ <div class="input-group-text">
+ <i class="fas fa-envelope"></i>
+ </div>
+ </div>
+ <input type="text" class="form-control" name="LL">
+ </div>
+	</div>
+	<div class="form-group">
+ <label>LP</label>
+ <div class="input-group">
+ <div class="input-group-prepend">
+ <div class="input-group-text">
+ <i class="fas fa-envelope"></i>
+ </div>
+ </div>
+ <input type="text" class="form-control" name="LP">
+ </div>
+	</div>
+	
+	
+	
+</form>
+
+<?php $this->stopSection(); ?>
+<?php $this->startSection('js-export'); ?>
+<script src="<?php echo static::e(base_url("assets/modules/datatables/datatables.min.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/datatables/Select-1.2.4/js/dataTables.select.min.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/modules/jquery-ui/jquery-ui.min.js")); ?>"></script>
+
+<script src="<?php echo static::e(base_url("assets/modules/prism/prism.js")); ?>"></script>
+<script src="<?php echo static::e(base_url("assets/js/page/bootstrap-modal.js")); ?>"></script>
+
+<?php $this->stopSection(); ?>
+<?php $this->startSection('js-inline'); ?>
+<script src="<?php echo static::e(base_url('assets/js/page/modules-datatables.js')); ?>"></script>
+<script>
+
+	var gBulan = $("select[name='bulan']");
+	var gTahun = $("input[name='tahun']");
+	var gPuskesmas = $("select[name='puskesmas']");
+	var gPenyakit = $("select[name='penyakit']");
+	var gBL = $("input[name='BL']");
+	var gBP = $("input[name='BP']");
+	var gLL = $("input[name='LL']");
+	var gLP = $("input[name='LP']");
+
+	$(function() {
+ tablePenyakit = $('#table-kesakitan').DataTable({ 
+ "bAutoWidth": false ,
+ "processing": true, 
+ "serverSide": true, 
+ "order": [], 
+ "ajax": {
+ "url": '<?php echo base_url('data-kesakitan/jsonDataKesakitan'); ?>',
+ "type": "POST",
+
+
+ },
+ "columns": [
+ {"data": "periode"},
+ {"data": "penyakit_kode"},
+ {"data": "penyakit_sst"},
+ {"data": "penyakit_nama"},
+ {"data": "puskesmas_nama"},
+ {"data": "BL"},
+ {"data": "BP"},
+ {"data": "LL"},
+ {"data": "LP"},
+ {"data": "action"},
+ ],
+ 'columnDefs': [
+ {
+ "targets": 0,
+ "orderable" : false,
+ },
+ {
+ "targets": -1,
+ "className": "text-center",
+ "searchable" : false,
+ "orderable" : false,
+
+ }
+ ],
+
+
+
+ });
+
+
+ $("#button-tambah").fireModal({
+ title: '-',
+ body: $("#form-kesakitan"),
+ footerClass: 'bg-whitesmoke',
+ autoFocus: false,
+ modal: {
+ backdrop: false,
+ keyboard: false,
+ },
+ onFormSubmit: function(modal, e, form) {
+ let form_data = $(e.target).serialize();
+ console.log(form_data)
+
+ let fake_ajax = setTimeout(function() {
+ form.stopProgress();
+ modal.find('.error-display').html('<div class="alert alert-info">Please check your browser console</div>')
+
+ clearInterval(fake_ajax);
+ }, 1500);
+
+ console.log(modal);
+ e.preventDefault();
+ },
+ shown: function(modal, form) {
+ },
+ buttons: [
+ {
+ text: 'Cek Database',
+ class: 'btn btn-primary btn-shadow',
+ handler: function(modal) {
+ var eBulan = modal.find('select[name="bulan"]');
+ var eTahun = modal.find('input[name="tahun"]');
+ var ePenyakit = modal.find('select[name="penyakit"]');
+ var ePuskesmas = modal.find('select[name="puskesmas"]');
+ var eBL = modal.find('input[name="BL"]');
+ var eBP = modal.find('input[name="BP"]');
+ var eLL = modal.find('input[name="LL"]');
+ var eLP = modal.find('input[name="LP"]');
+
+ var values = {
+ bulan: eBulan.val(),
+ tahun: eTahun.val(),
+ penyakit: ePenyakit.val(),
+ puskesmas: ePuskesmas.val(),
+ };
+ postData = {
+ bulan: values.bulan,
+ tahun: values.tahun,
+ penyakit: values.penyakit,
+ puskesmas: values.puskesmas,
+ };
+ var fd = new FormData();
+ for (var i in postData) {
+ fd.append(i, postData[i]);
+ }
+ cekDatabase(fd)
+ .then(data => {
+ if (data == null) {
+ data = {
+ BL : "",
+ BP : "",
+ LL : "",
+ LP : "",
+ }
+ }
+ eBL.val(data.BL);
+ eBP.val(data.BP);
+ eLL.val(data.LL);
+ eLP.val(data.LP);
+
+ });
+ }
+ },
+ {
+ text: 'Submit',
+ submit: true,
+ class: 'btn btn-primary btn-shadow',
+ handler: function(modal) {
+ }
+ }
+ ]
+ });
+	});
+
+	
+
+
+	function showModal(iID,type=null) {
+
+ var ebulan = $('select[name="bulan"]');
+ var etahun = $('input[name="tahun"]');
+ var epenyakit = $('select[name="penyakit"]');
+ var epuskesmas = $('select[name="puskesmas"]');
+ var eBL = $('input[name="BL"]');
+ var eBP = $('input[name="BP"]');
+ var eLL = $('input[name="LL"]');
+ var eLP = $('input[name="LP"]');
+
+ var values = {
+ bulan: ebulan.val(),
+ tahun: etahun.val(),
+ penyakit: epenyakit.val(),
+ puskesmas: epuskesmas.val(),
+ };
+ postData = {
+ kesakitan_id: iID,
+ };
+ var fd = new FormData();
+ for (var i in postData) {
+ fd.append(i, postData[i]);
+ }
+
+ cekDatabase(fd)
+ .then(data => {
+ console.log(data);
+ console.log(ebulan);
+ ebulan.val(data.kesakitan_bulan);
+ etahun.val(data.kesakitan_tahun);
+ epenyakit.val(data.kesakitan_penyakit_id);
+ epuskesmas.val(data.kesakitan_puskesmas_id);
+ eBL.val(data.BL);
+ eBP.val(data.BP);
+ eLL.val(data.LL);
+ eLP.val(data.LP);
+
+ $("#button-tambah").click();
+ });
+
+	}
+
+
+
+
+
+	async function cekDatabase(values) {
+ var url = "<?php echo static::e(base_url('data-kesakitan/jsonCekDatabase')); ?>";
+ const response = await fetch(url, {
+ method: 'POST',
+ body: values,
+ });
+ return await response.json();
+	}
+</script>
+<?php $this->stopSection(); ?>
+<?php if (@$_shouldextend[1]) { echo $this->runChild('layouts.layout'); } ?>

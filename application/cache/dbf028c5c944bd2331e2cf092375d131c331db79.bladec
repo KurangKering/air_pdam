@@ -1,0 +1,66 @@
+<div class="card">
+	<div class="card-body">
+ <div class="table-responsive">
+ <table class="table">
+ <tbody>
+ <tr>
+ <th style="width:50%">Nama Perusahaan</th>
+ <td><?php echo static::e($client['nama_perusahaan']); ?></td>
+ </tr>
+ <tr>
+ <th>Meteran AKhir</th>
+ <td><?php echo static::e($client['meteran_akhir']); ?></td>
+ </tr>
+ <tr>
+ <th>Periode Akhir</th>
+ <td><?php echo static::e($periode_terakhir_readable); ?></td>
+ </tr>
+ <tr>
+ <th>Status</th>
+ <td><?php echo static::e($status_readable ?? "-"); ?></td>
+ </tr>
+ <?php if($next != NULL): ?> 
+ <tr>
+ <th>Periode Selanjutnya</th>
+ <td><?php echo static::e($next['periode_readable']); ?></td>
+ </tr>
+ <?php endif; ?>
+ </tbody>
+ </table>
+ </div>
+	</div>
+</div>
+<?php 
+$keterangan_belum = array(
+	KeteranganPeriode::BELUM_PERIODE_INI,
+	KeteranganPeriode::BELUM_PERIODE_SEBELUMNYA,
+);
+ ?>
+<div class="card ">
+	<div class="card-body">
+ 
+ <?php if(
+ in_array($keterangan_periode, $keterangan_belum) || 
+ (isset($current) && 
+ in_array($current['status'], 
+ [
+ StatusTransaksi::GAGAL_VERIFIKASI,
+ StatusTransaksi::MENUNGGU_PEMBAYARAN, 
+ StatusTransaksi::GAGAL_PEMBAYARAN
+ ]
+ )
+ )
+ ): ?>
+ <button class="btn btn-block btn-primary btn-proses" type="button">Proses Transaksi</button>
+
+ <?php endif; ?>
+ </div>
+	</div>
+	<script>
+ $(function() {
+ $(".btn-proses").click(function(e) {
+
+ window.location.href= "<?php echo static::e(base_url('client-transaksi/forward/')); ?>";
+ });
+ });
+	</script>

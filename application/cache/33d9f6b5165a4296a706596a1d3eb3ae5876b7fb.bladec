@@ -1,0 +1,106 @@
+
+<div class="card">
+	
+	<div class="card-body content-area">
+ 
+ <div class="form-group">
+
+ <table class="table no-border">
+ <col width="20%">
+ <col width="2%">
+
+ <tr>
+ <td>Nama Perusahaan</td>
+ <td>:</td>
+ <td><span id="nama_perusahaan"><?php echo static::e($data_client['nama_perusahaan']); ?></span></td>
+ </tr>
+ <tr>
+ <td>Periode Transaksi</td>
+ <td>:</td>
+ <td><span id="bulan_terakhir"><?php echo static::e($last_transaction['bulan_huruf']); ?></span> <span id="tahun_terakhir"><?php echo static::e($last_transaction['tahun']); ?></span></td>
+ </tr>
+
+ <tr>
+ <td>Status Transaksi</td>
+ <td>:</td>
+ <td><span id="tahapan_terakhir"><?php echo static::e($last_transaction['status_message']); ?></span></td>
+ </tr>
+ </table>
+ </div>
+
+	</div>
+</div>
+<div class="card">
+	
+	<div class="card-body content-area">
+ 
+ <div class="form-group">
+ 
+ <table class="table no-border">
+ <thead>
+ <tr>
+ <th>Tanggal</th>
+ <th>Meteran Awal</th>
+ <th>Meteran Akhir</th>
+ <th>Meteran Pemakaian</th>
+ </tr>
+ <?php $__currentLoopData = $detail_transaksi; $this->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $this->incrementLoopIndices(); $loop = $this->getFirstLoop(); ?>
+ <tr>
+ <td><?php echo static::e($v->tanggal); ?></td>
+ <td><?php echo static::e($v->awal); ?></td>
+ <td><?php echo static::e($v->akhir); ?></td>
+ <td><?php echo static::e($v->pemakaian); ?></td>
+ </tr>
+ <?php endforeach; $this->popLoop(); $loop = $this->getFirstLoop(); ?>
+ </thead>
+ </table>
+ </div>
+
+
+	</div>
+</div>
+<div class="card">
+	
+	<div class="card-body content-area">
+ 
+ <input type="hidden" name="client_id" value="<?php echo static::e($data_client->id); ?>">
+ <button class="btn btn-primary btn-verifikasi" data-is-verif="1" type="button">Verifikasi</button>
+ <button class="btn btn-warning btn-verifikasi" data-is-verif="-1" type="button">Input Ulang</button>
+
+
+	</div>
+</div>
+
+
+<?php $this->startSection('js-inline'); ?>
+<script>
+	$(".btn-verifikasi").click(function(event) {
+
+ let is_verif = $(this).attr('data-is-verif');
+ let client_id = $("input[name='client_id']").val();
+ let formData = {
+ is_verif: is_verif,
+ client_id: client_id,
+ };
+ data = Object.keys(formData).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(formData[key])).join('&');
+ $("body").loading('start');
+
+ axios.post("<?php echo static::e(base_url("transaksi/action_forward")); ?>", data)
+ .then((res) => {
+
+ data = res.data;
+ if (data.success) {
+ location.href = '<?php echo static::e(base_url('transaksi')); ?>';
+ } else {
+ 
+ $("body").loading('stop');
+ }
+ console.log(data);
+ })
+ .catch(err => {
+ $("body").loading('stop');
+
+ });
+	});
+</script>
+<?php $this->stopSection(); ?>
