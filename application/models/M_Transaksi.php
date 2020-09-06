@@ -19,6 +19,7 @@ class M_Transaksi extends Eloquent
 		'meteran_akhir',
 		'waktu_input',
 		'waktu_verifikasi',
+		'waktu_mulai_pembayaran',
 		'status_transaksi_id',
 		'created_at',
 		'updated_at',
@@ -29,6 +30,7 @@ class M_Transaksi extends Eloquent
 		'waktu_verifikasi',
 		'waktu_input',
 		'waktu_pembayaran',
+		'waktu_mulai_pembayaran',
 	];
 
 	protected $appends = [

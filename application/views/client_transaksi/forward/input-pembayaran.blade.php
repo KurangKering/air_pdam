@@ -62,7 +62,6 @@
 
 				</label>
 				<input type="file" class="form-control"
-
 				@if ($current['file_pembayaran_fullpath'] == NULL)
 				required
 				@endif

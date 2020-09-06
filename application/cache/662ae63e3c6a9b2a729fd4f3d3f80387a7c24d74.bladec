@@ -62,7 +62,6 @@
 
  </label>
  <input type="file" class="form-control"
-
  <?php if($current['file_pembayaran_fullpath'] == NULL): ?>
  required
  <?php endif; ?>
