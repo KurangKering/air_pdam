@@ -4,7 +4,6 @@
 	.bersinar {
 		background-color: red;
 	}
-	
 </style>
 @endsection
 @section('content')
@@ -12,76 +11,160 @@
 	<h1 class="page-title">
 		Tambah Transaksi
 	</h1>
-	
 </div>
 <div class="row row-cards row-deck">
 	<div class="col-12">
 		<div class="card">
-			
 			<!-- /.card-header -->
 			<!-- form start -->
 			<div class="card-body">
-				<form id="form-transaksi" enctype="multipart/form-data" method="GET">
-					
-					<input type="hidden" name="input-client_id" value="{{ $data['data_perusahaan']['client_id'] }}">
-					<input type="hidden" name="input-periode_bulan" value="{{ $data['next_transaction']['bulan'] }}">
-					<input type="hidden" name="input-periode_tahun" value="{{ $data['next_transaction']['tahun'] }}">
+				<form enctype="multipart/form-data" id="form-transaksi" method="GET">
+					<input name="input-client_id" type="hidden" value="{{ $data['data_perusahaan']['id'] }}">
+					<input name="input-periode_bulan" type="hidden" value="{{ $data['next']['bulan'] }}">
+					<input name="input-periode_tahun" type="hidden" value="{{ $data['next']['tahun'] }}">
+					<input name="input-waktu_input" type="hidden" value="">
+					<input name="input-waktu_verifikasi" type="hidden" value="">
+					<input name="input-waktu_mulai_pembayaran" type="hidden" value="">
+					<input name="input-biaya" type="hidden" value="">
 					<div class="form-group">
-						<label class="form-label">Nama Perusahaan</label>
-						<input type="text" class="form-control" name="input-nama_perusahaan" value="{{ $data['data_perusahaan']['nama_perusahaan'] }}" disabled>
-					</div>
-					<div class="form-group">
-						<label class="form-label">Periode Bulan</label>
-						<input type="text" class="form-control" name="" value="{{ $data['next_transaction']['bulan_huruf'] }}" disabled>
-					</div>
-					<div class="form-group">
-						<label class="form-label">Periode Tahun</label>
-						<input type="text" class="form-control" name="" value="{{ $data['next_transaction']['tahun'] }}" disabled>
-					</div>
-					<div class="form-group">
-						<label class="form-label">Status Transaksi</label>
-						<select name="input-status" id="status" class="form-control">
-							@foreach ($data['status_transaksi'] as $k => $v)
-							@if (in_array($k, [1,3,6]))
-							<option value="{{ $k }}">{{ $v }}</option>
-
-							@endif
-							@endforeach
-						</select>
-					</div>
-					<div class="form-group">
-						<label class="form-label">Scan Meteran</label>
-						<input type="file" class="form-control" name="file_meteran" id="file_meteran">
-					</div>
-					<div class="form-group">
-						<label class="form-label">Scan Pembayaran</label>
-						<input type="file" class="form-control" name="file_pembayaran" id="file_pembayaran">
-					</div>
-
-					<table class="table table-bordered">
-						<tr>
-							<th>Tanggal</th>
-							<th>Meter Awal</th>
-							<th>Meter Akhir</th>
-							<th>Pemakaian</th>
-							<th>Action</th>
-						</tr>
-						<tbody id="content-transaksi">
-
-						</tbody>
-					</table>
-
-					<div class="form-group">
-						<button id="btn-submit" class="btn btn-primary" type="submit">Submit</button>
-					</div>
-
-				</form>
+						<label class="form-label">
+							Nama Perusahaan
+						</label>
+						<input class="form-control" disabled="" name="input-nama_perusahaan" type="text" value="{{ $data['data_perusahaan']['nama_perusahaan'] }}">
+					</input>
+				</div>
+				<div class="form-group">
+					<label class="form-label">
+						Periode Bulan
+					</label>
+					<input class="form-control" disabled="" name="" type="text" value="{{ $data['next']['bulan_huruf'] }}">
+				</input>
 			</div>
-			<!-- /.card-body -->
+			<div class="form-group">
+				<label class="form-label">
+					Periode Tahun
+				</label>
+				<input class="form-control" disabled="" name="" type="text" value="{{ $data['next']['tahun'] }}">
+			</input>
 		</div>
+		<div class="form-group">
+			<label class="form-label">
+				Scan Meteran
+			</label>
+			<input class="form-control" id="file_meteran" name="file_meteran" type="file">
+		</input>
 	</div>
+	<table class="table table-bordered">
+		<tr>
+			<th>
+				Tanggal
+			</th>
+			<th>
+				Meter Awal
+			</th>
+			<th>
+				Meter Akhir
+			</th>
+			<th>
+				Pemakaian
+			</th>
+			<th>
+				Action
+			</th>
+		</tr>
+		<tbody id="content-transaksi">
+		</tbody>
+	</table>
+	<table class="table table-bordered table-hover">
+		<tr>
+			<th width="50%">
+				Tanggal Input
+			</th>
+			<td>
+				<span class="set-data-span" id="waktu_input">
+					: -
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<th width="50%">
+				Tanggal Konfirmasi
+			</th>
+			<td>
+				<span class="set-data-span" id="waktu_verifikasi">
+					: -
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<th width="50%">
+				Biaya Pemakaian
+			</th>
+			<td>
+				<span class="set-data-span" id="biaya_bersih">
+					: -
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<th width="50%">
+				Denda Telat Input
+			</th>
+			<td>
+				<span class="set-data-span" id="denda_input">
+					: -
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<th width="50%">
+				Denda Telat Bayar
+			</th>
+			<td>
+				<span class="set-data-span" id="denda_bayar">
+					: -
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<th width="50%">
+				Total yang harus dibayar
+			</th>
+			<td>
+				<span class="set-data-span" id="total_biaya">
+					: -
+				</span>
+			</td>
+		</tr>
+	</table>
+	<div class="form-group">
+		<button class="btn btn-primary" id="btn-cek-biaya" type="button">
+			Cek Biaya
+		</button>
+	</div>
+	<div class="form-group">
+		<label class="form-label">
+			Scan Pembayaran
+		</label>
+		<input class="form-control" id="file_pembayaran" name="file_pembayaran" type="file">
+	</input>
 </div>
-
+<div class="form-group">
+	<button class="btn btn-primary" id="btn-submit" type="button">
+		Submit
+	</button>
+</div>
+</input>
+</input>
+</input>
+</input>
+</input>
+</input>
+</form>
+</div>
+</div>
+</div>
+</div>
 @endsection
 @section('js-export')
 
@@ -94,345 +177,123 @@
 	let $tombolLibur = null;
 	let contohni = null;
 	let $btnSubmit = null;
-	$(function() {
+	$btnCekBiaya = null;
 
-		$inputMeteranAwal = $(".input-meteran-awal");
-		$inputMeteranAkhir = $(".input-meteran-akhir");
-		$inputPemakaian = $(".input-pemakaian");
-		$tombolLibur = $(".tombol-libur");
-		$btnSubmit = $("#btn-submit");
-		$formTransaksi = $("#form-transaksi");
+	$inputMeteranAwal = $(".input-meteran-awal");
+	$inputMeteranAkhir = $(".input-meteran-akhir");
+	$inputPemakaian = $(".input-pemakaian");
+	$tombolLibur = $(".tombol-libur");
+	$btnSubmit = $("#btn-submit");
+	$btnCekBiaya = $("#btn-cek-biaya");
+	$formTransaksi = $("#form-transaksi");
 
-		let $clientId = $("input[name='input-client_id']").val();
-		let formData = {
-			id : $clientId,
-		}
-		data = Object.keys(formData).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(formData[key])).join('&')
-		axios.post('{{ base_url('transaksi/getFormPemakaian') }}', data)
+	let $clientId = $("input[name='input-client_id']").val();
+	let formData = {
+		id : $clientId,
+	}
+	data = Object.keys(formData).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(formData[key])).join('&')
+	axios.post('{{ base_url('transaksi/getFormPemakaian') }}', data)
+	.then(res => {
+
+		data = res.data;
+
+
+		const Container = new ContainerPemakaian();
+
+		let meteranAkhir = data.next.meteran_akhir;
+		let daftarTanggal = data.next.data_tanggal;
+
+		daftarTanggal.forEach((element,index) => {
+			let awal = "";
+			if (index == 0) {
+				awal = meteranAkhir;
+			}
+			Container.addPemakaian(new Pemakaian(element, awal));
+		})
+
+		const objRenderer = new Renderer(Container, "#content-transaksi");
+		objRenderer.render();
+
+		daftarTanggal.forEach((e,i) => {
+			$("#input_meter_akhir_"+i).val(meteranAkhir + i + 1).trigger("change");
+		})
+
+	})
+	.catch(err => {
+
+	})
+
+
+
+	$("#btn-submit").click(function(event) {
+		event.preventDefault();
+		$(this).attr('disabled', true);
+		data = new FormData($formTransaksi[0]);
+
+		axios.post('{{ base_url('transaksi/insert') }}', data)
 		.then(res => {
+			if (!res.data.success) 
+			{
+				swal({
+					icon : 'warning',
+					title : 'Gagal',
+					text : 'Tidak ada ATK',
+					buttons : false,
+					timer : 1500,
+				})
+			} else
+			{
+				window.location.href = "{{ base_url('transaksi') }}";
+			}
 
-			data = res.data;
-
-
-			const Container = new ContainerPemakaian();
-
-			let meteranAkhir = data.next_transaction.meteran_akhir;
-			let daftarTanggal = data.next_transaction.data_tanggal;
-
-			daftarTanggal.forEach((element,index) => {
-				let awal = "";
-				if (index == 0) {
-					awal = meteranAkhir;
-				}
-				Container.addPemakaian(new Pemakaian(element, awal));
-			})
-
-			const objRenderer = new Renderer(Container, "#content-transaksi");
-			objRenderer.render();
-
-			daftarTanggal.forEach((e,i) => {
-				$("#input_meter_akhir_"+i).val(meteranAkhir + i + 1).trigger("change");
-			})
+			$("#btn-submit").attr('disabled', false);
 
 		})
 		.catch(err => {
+			$("#btn-submit").attr('disabled', false);
+
+		});
+	});
+	$btnCekBiaya.click(function(event) {
+		event.preventDefault();
+		$btnCekBiaya.attr('disabled', true);
+
+		var meteran_awal = $("input[name='input-meter_awal[]']").first().val();
+		var meteran_akhir = $("input[name='input-meter_akhir[]']").last().val();
+
+		let formData = {
+			client_id : $clientId,
+			meteran_awal : meteran_awal,
+			meteran_akhir : meteran_akhir,
+		}
+		data = Object.keys(formData).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(formData[key])).join('&')
+
+
+		axios.post('{{ base_url('transaksi/getBiayaTransaksi') }}', data)
+		.then(res => {
+			data = res.data;
+			$("#waktu_input").text(data.waktu_input);
+			$("#waktu_verifikasi").text(data.waktu_verifikasi);
+			$("#biaya_bersih").text(data.biaya_bersih);
+			$("#denda_input").text(data.denda_input);
+			$("#denda_bayar").text(data.denda_bayar);
+			$("#total_biaya").text(data.biaya_seluruhnya);
+
+			$("input[name='input-waktu_input']").val(data.waktu_input);
+			$("input[name='input-waktu_verifikasi']").val(data.waktu_verifikasi);
+			$("input[name='input-waktu_mulai_pembayaran']").val(data.waktu_bayar);
+			$("input[name='input-biaya']").val(data.biaya_seluruhnya_angka);
 
 		})
+		.catch(err => {
+			$("#btn-submit").attr('disabled', false);
 
+		})
+		.then(() => {
+			$btnCekBiaya.attr('disabled', false);
+			
 
-
-		$("#btn-submit").click(function(event) {
-			event.preventDefault();
-			$(this).attr('disabled', true);
-			data = new FormData($formTransaksi[0]);
-
-			axios.post('{{ base_url('transaksi/insert') }}', data)
-			.then(res => {
-				if (!res.data.success) 
-				{
-					swal({
-						icon : 'warning',
-						title : 'Gagal',
-						text : 'Tidak ada ATK',
-						buttons : false,
-						timer : 1500,
-					})
-				} else
-				{
-					window.location.href = "{{ base_url('transaksi') }}";
-				}
-
-				$("#btn-submit").attr('disabled', false);
-
-			})
-			.catch(err => {
-				$("#btn-submit").attr('disabled', false);
-
-			});
 		});
-		
-
-
-
-
-
-
-
 	});
-
-
-	function Pemakaian(tanggal,meter_awal,meter_akhir) {
-		let _tanggal = tanggal;
-		let _meter_awal = meter_awal;
-		let _meter_akhir = meter_akhir;
-		let _pemakaian = meter_akhir - meter_awal;
-
-
-		function getTanggal () {
-			return _tanggal;
-		}
-
-		function getMeterAwal() {
-			if (parseInt(_meter_awal) >= 0 ) {
-				return parseInt(_meter_awal);
-			}
-			return null;
-		}
-
-		function getMeterAkhir () {
-			if (getMeterAwal() && getMeterAwal() <= parseInt(_meter_akhir)) {
-				return (_meter_akhir);
-			}
-			return null;
-		}
-
-		function getPemakaian () {
-			if (parseInt(_pemakaian) >= 0 ) {
-				return (_pemakaian);
-			}
-			return null;
-		}
-
-		function setPemakaian() {
-			if (getMeterAwal() && (getMeterAkhir() >= getMeterAwal())) {
-				console.log(getMeterAwal() != null);
-				_pemakaian = getMeterAkhir() - getMeterAwal();
-			} else {
-				_pemakaian = "";
-			}
-		}
-		function setTanggal(intTanggal) {
-			_tanggal = intTanggal;
-		}
-		function setMeterAwal(intMeterAwal) {
-			_meter_awal = intMeterAwal;
-			if (this.getMeterAwal() > this.getMeterAkhir()) {
-				this.setMeterAkhir(null);
-			} else {
-				setPemakaian();
-			}
-		}
-		function setMeterAkhir(intMeterAkhir) {
-			intMeterAkhir = parseInt(intMeterAkhir);
-
-			if (getMeterAwal()  &&  intMeterAkhir && getMeterAwal() <= intMeterAkhir) {
-				_meter_akhir = intMeterAkhir;
-			}
-			setPemakaian();
-
-		}
-
-		return {
-			getTanggal,
-			getMeterAwal,
-			getMeterAkhir,
-			getPemakaian,
-			setTanggal,
-			setMeterAwal,
-			setMeterAkhir,
-
-		}
-	}
-
-	function ContainerPemakaian() {
-		let _daftar_libur = new Array();
-		let _daftar_pemakaian = new Array();
-
-		function getPemakaian(i) {
-			return _daftar_pemakaian[i];
-		}
-
-		function setMeterAkhir(i, v) {
-
-			getPemakaian(i).setMeterAkhir(v);
-			if (typeof _daftar_pemakaian[i + 1] !== 'undefined') {
-				getPemakaian(i+1).setMeterAwal(getPemakaian(i).getMeterAkhir());
-			}
-
-		}
-
-		function getAllPemakaian() {
-			return _daftar_pemakaian;
-		}
-
-		function addPemakaian(Pemakaian) {
-			_daftar_pemakaian.push(Pemakaian);
-		}
-
-		function getAllDaftarLibur() {
-			return _daftar_libur;
-		}
-
-		function addDaftarLibur(daftar) {
-			if ($.inArray(daftar, _daftar_libur) == -1) {
-				_daftar_libur.push(daftar);
-			}
-			_daftar_libur.sort((a,b) => a - b);
-		}
-
-		function removeDaftarLibur(daftar) {
-			if ($.inArray(daftar, _daftar_libur) != -1) {
-				let index = $.inArray(daftar, _daftar_libur);
-				_daftar_libur.splice(index,1);
-			}
-			_daftar_libur.sort((a,b) => a - b);
-		}
-
-		return {
-			getPemakaian,
-			addPemakaian,
-			getAllPemakaian,
-			setMeterAkhir,
-			addDaftarLibur,
-			removeDaftarLibur,
-			getAllDaftarLibur,
-		};
-	}
-
-	function Renderer(AllData, divContent) {
-
-		let elements = [];
-
-		function singleRender(AllData,index) {
-			objPemakaian = AllData.getPemakaian(index);
-
-			let tableRow = $("<tr/>");
-			let kolomTanggal = $("<td/>");
-			let inputTanggal = $("<input/>", {
-				type : 'text',
-				name : 'input-tanggal[]',
-				class : 'form-control',
-				readonly : true,
-				id : "input_tanggal_"+index,
-				value : objPemakaian.getTanggal(),
-
-			});
-			let kolomMeterAwal = $("<td/>");
-			let inputMeterAwal = $("<input/>", {
-				type : 'text',
-				name : 'input-meter_awal[]',
-				class : 'form-control',
-				id : "input_meter_awal_"+index,
-				value : objPemakaian.getMeterAwal(),
-				readonly : true,
-			});
-			let kolomMeterAkhir = $("<td/>");
-			let inputMeterAkhir = $("<input/>", {
-				type : 'text',
-				name : 'input-meter_akhir[]',
-				class : 'form-control',
-				id : "input_meter_akhir_"+index,
-				value : objPemakaian.getMeterAkhir(),
-			});
-			let kolomPemakaian = $("<td/>");
-			let inputPemakaian = $("<input/>", {
-				type : 'text',
-				name : 'input-pemakaian[]',
-				class : 'form-control',
-				id : "input_pemakaian_"+index,
-				readonly : true,
-			});
-
-			let kolomAction = $("<td>");
-			let btnAction = $("<button/>", {
-				type : 'button',
-				text : 'libur',
-				class : "btn btn-secondary",
-				id : "btn_action_"+index,
-				"data-libur" : "off",
-			});
-
-
-			inputMeterAkhir.change(function(event) {
-				let objPemakaian = 
-				AllData.setMeterAkhir(index,$(this).val());
-
-				updateData();
-
-			});
-
-			btnAction.click(function(event) {
-
-				let value = $(this).attr("data-libur");
-
-
-				if (value == "on") {
-					AllData.removeDaftarLibur(index);
-					$(this).parents('tr:first').removeClass('bersinar');
-
-					$(this).attr("data-libur", "off");
-				} else {
-					AllData.addDaftarLibur(index);
-					$(this).parents('tr:first').addClass('bersinar')
-					$(this).attr("data-libur", "on");
-				}
-
-				console.log(AllData.getAllDaftarLibur());
-
-			});
-
-			elements.push({
-				tanggal : inputTanggal.attr("id"),
-				meter_awal : inputMeterAwal.attr("id"),
-				meter_akhir : inputMeterAkhir.attr("id"),
-				pemakaian : inputPemakaian.attr("id"),
-			})
-
-			let populate = tableRow.append(kolomTanggal.append(inputTanggal))
-			.append(kolomMeterAwal.append(inputMeterAwal))
-			.append(kolomMeterAkhir.append(inputMeterAkhir))
-			.append(kolomPemakaian.append(inputPemakaian))
-			.append(kolomAction.append(btnAction));
-
-			return populate;
-
-		}
-
-		function updateData() {
-
-			AllData.getAllPemakaian().forEach((ee, index) => {
-				$("#"+elements[index].tanggal).val(ee.getTanggal());
-				$("#"+elements[index].meter_awal).val(ee.getMeterAwal());
-				$("#"+elements[index].meter_akhir).val(ee.getMeterAkhir());
-				$("#"+elements[index].pemakaian).val(ee.getPemakaian());
-
-			})
-		}
-
-		function render() {
-
-			AllData.getAllPemakaian().forEach((element, index) => {
-				$(divContent).append(singleRender(AllData, index));
-			})
-
-		}
-
-
-
-		return {
-			render,
-		}
-	}
-
 </script>
 @endsection

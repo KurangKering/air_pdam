@@ -5,9 +5,11 @@ $arrPending = ['pending_periode_ini','pending_periode_sebelumnya'];
 $arrEmpty = ['empty'];
 $arrSuccess = ['success'];
  ?>
-<div class="card ">
-	
-	<div class="card-body">
+<div class="row">
+	<div class="col-4">
+ <div class="card ">
+
+ <div class="card-body">
  <table class="table  ">
  <col >
  <col width="1%">
@@ -23,11 +25,12 @@ $arrSuccess = ['success'];
  <td><?php echo static::e($data_perusahaan['meteran_akhir']); ?></td>
  </tr>
  </table>
+ </div>
+ </div>
 	</div>
-</div>
-
-<div class="row">
-	<div class="col-md-6">
+	<div class="col-8">
+ <div class="row">
+ <div class="col-md-6">
  <div class="card ">
  <div class="card-header">
  <div class="card-title">
@@ -53,13 +56,13 @@ $arrSuccess = ['success'];
  </table>
  <div class="d-flex">
  <div class="ml-auto">
- 
+
 
  <?php if(in_array($status, $arrPending) && 1 == 2): ?>
  <button type="button" class="btn btn-info btn-update">Proses Transaksi</button>
  <?php endif; ?>
  </div>
- 
+
  </div>
  <?php else: ?> 
  -
@@ -67,8 +70,8 @@ $arrSuccess = ['success'];
 
  </div>
  </div>
-	</div>
-	<div class="col-md-6">
+ </div>
+ <div class="col-md-6">
  <div class="card ">
  <div class="card-header">
  <div class="card-title">
@@ -85,22 +88,27 @@ $arrSuccess = ['success'];
  <td>:</td>
  <td><?php echo static::e($next_transaction['bulan_huruf'] . " ". $next_transaction['tahun']); ?></td>
  </tr>
- 
+
  </table>
  <div class="d-flex">
  <div class="ml-auto">
- 
+
 
  <?php if(in_array($status, $arrBelum) && 1 == 2): ?>
  <button type="button" class="btn btn-info">Tambah Transaksi</button>
  <?php endif; ?>
  </div>
- 
+
+ </div>
+ </div>
  </div>
  </div>
  </div>
 	</div>
 </div>
+
+
+
 <script>
 	$(function() {
  $(".btn-update").click(function(e) {

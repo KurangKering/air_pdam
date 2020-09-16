@@ -49,7 +49,7 @@ class ClientTransaksi extends MY_Controller
 			<button type=\"button\" class=\"btn  btn-sm btn-outline-primary\" onClick=\"showDetailTransaksi('{$data['id']}',1)\">
 			<i class=\"fas fa-eye\"></i> Detail</button>
 
-			<button type=\"button\" class=\"btn  btn-sm btn-outline-primary\" onClick=\"showDetailTransaksi('{$data['id']}',1)\">
+			<button type=\"button\" class=\"btn  btn-sm btn-outline-primary\" onClick=\"printTransaksi('{$data['id']}')\">
 			<i class=\"fas fa-print\"></i> Cetak</button>
 			";
 
@@ -263,7 +263,7 @@ class ClientTransaksi extends MY_Controller
         $client                        = $this->M_Client->findOrFail($output['client_id']);
         $output['nama_perusahaan']     = $client->nama_perusahaan;
         $output['denda_input']         = hRupiah($output['denda_input']);
-        $output['denda_bayar']         = hRupiah($output['denda_bayar']). " ({$output['jumlah_hari_bayar']} Hari)";
+        $output['denda_bayar']         = hRupiah($output['denda_bayar']) . " ({$output['jumlah_hari_bayar']} Hari)";
         $output['biaya_bersih']        = hRupiah($output['biaya_bersih']);
         $output['periode']             = indoDate($output['periode'], 'm Y');
         $output['waktu_input']         = indoDate($output['waktu_input']->format('Y-m-d H:i:s'), 'j-m-Y H:i:s');
@@ -413,6 +413,8 @@ class ClientTransaksi extends MY_Controller
             'meteran_akhir'       => $post['meteran_akhir'],
             'status_transaksi_id' => StatusTransaksi::INPUT_DATA,
             'waktu_input'         => Carbon::now(),
+            'created_by_user_id'  => $client_id,
+
         );
 
         $periode_filename = $post['periode']->copy()->format('Y-m');
@@ -570,6 +572,13 @@ class ClientTransaksi extends MY_Controller
             ->set_content_type('application/json')
             ->set_output(json_encode($output));
 
+    }
+
+    public function printIframe()
+    {
+        $id        = $this->input->get('transaksi_id');
+        $transaksi = $this->M_Transaksi->with('dataStatusTransaksi', 'dataClient')->findOrFail($id);
+        return view('client_transaksi.content_print', compact('transaksi'));
     }
 }
 /* End of file Transaksi.php */

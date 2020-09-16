@@ -17,6 +17,12 @@
  <th>Status Transaksi</th>
  <td><?php echo static::e($transaksi['data_status_transaksi']['status']); ?></td>
  </tr>
+ <?php if($transaksi['status_transaksi_id'] == StatusTransaksi::TRANSAKSI_BERHASIL): ?>
+ <tr>
+ <th>Biaya</th>
+ <td><?php echo static::e(hRupiah($transaksi['biaya'])); ?></td>
+ </tr>
+ <?php endif; ?>
 
 
 

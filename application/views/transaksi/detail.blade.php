@@ -19,6 +19,13 @@
 				<td>:</td>
 				<td>{{ $transaksi['data_status_transaksi']['status'] }}</td>
 			</tr>
+			@if ($transaksi['status_transaksi_id'] == StatusTransaksi::TRANSAKSI_BERHASIL)
+			<tr>
+				<th>Biaya</th>
+				<td>:</td>
+				<td>{{ hRupiah($transaksi['biaya']) }}</td>
+			</tr>
+			@endif
 			
 
 		</table>

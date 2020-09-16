@@ -16,6 +16,7 @@
  </div>
  <div class="col-sm-6" style="text-align: right">
  <button  data-toggle="modal" data-target="#modalLookupClient" class="btn btn-primary">Cek Transaksi</button>
+ <button  onclick="location.href='<?php echo static::e(base_url("transaksi/tambah")); ?>'" class="btn btn-primary">Tambah Transaksi</button>
  </div>
  </div>
 	</div><!-- /.container-fluid -->
@@ -86,7 +87,7 @@
 
 
 <div class="modal fade" id="modalCekTransaksi">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-xl">
  <div class="modal-content">
  <div class="modal-header">
  <h4 class="modal-title">Riwayat Transaksi</h4>

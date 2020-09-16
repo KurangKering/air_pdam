@@ -42,19 +42,19 @@ class Transaksi extends MY_Controller
                 $post_status                   = StatusTransaksi::MENUNGGU_PEMBAYARAN;
                 $post_data['waktu_verifikasi'] = Carbon::now();
 
-                $client                        = $this->M_Client->findOrFail($post['client_id']);
-                $client->meteran_akhir         = $transaksi->meteran_akhir;
+                $client                = $this->M_Client->findOrFail($post['client_id']);
+                $client->meteran_akhir = $transaksi->meteran_akhir;
                 $client->save();
 
                 $bulan_pembayaran = $transaksi->periode->copy()->modify('first day of next month');
-                $waktu_input = $transaksi->waktu_input;
-                $config                = $this->M_Config->first();
-                $batas_input = $bulan_pembayaran->copy()->addDays($config->batas_input);
+                $waktu_input      = $transaksi->waktu_input;
+                $config           = $this->M_Config->first();
+                $batas_input      = $bulan_pembayaran->copy()->addDays($config->batas_input);
 
                 if ($waktu_input < $batas_input) {
-                   $post_data['waktu_mulai_pembayaran'] = $post_data['waktu_verifikasi'];
+                    $post_data['waktu_mulai_pembayaran'] = $post_data['waktu_verifikasi'];
                 } else {
-                   $post_data['waktu_mulai_pembayaran'] = $batas_input;
+                    $post_data['waktu_mulai_pembayaran'] = $batas_input;
 
                 }
             } else {
@@ -109,24 +109,28 @@ class Transaksi extends MY_Controller
     }
     public function tambah()
     {
-        $client_id          = $this->uri->segment(3);
-        $format_transaction = $this->formatLastTransaction($client_id);
-        $last_transaction   = $format_transaction['last_transaction'];
-        if ($last_transaction['status'] != StatusTransaksi::TRANSAKSI_BERHASIL) {
-            redirect('transaksi');
+        $client_id = $this->uri->segment(3);
+        $this->load->library('TrackTransaksi', ['client_id' => $client_id]);
+        $track_transaksi   = $this->tracktransaksi->generate();
+        $keterangan_client = $track_transaksi['keterangan_periode'];
+
+        if (!in_array($keterangan_client, [KeteranganPeriode::BELUM_PERIODE_INI, KeteranganPeriode::BELUM_PERIODE_SEBELUMNYA])) {
+            echo "<script>alert('maaf tidak boleh masuk')</script>";
+            die();
         }
-        $next_transaction                = $format_transaction['next_transaction'];
-        $next_month                      = $next_transaction['bulan'];
-        $next_year                       = $next_transaction['tahun'];
-        $total_days                      = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);
-        $next_transaction['jumlah_hari'] = $total_days;
+
+        $next                = $track_transaksi['next'];
+        $next_month          = $next['bulan'];
+        $next_year           = $next['tahun'];
+        $total_days          = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);
+        $next['jumlah_hari'] = $total_days;
         for ($i = 1; $i <= $total_days; $i++) {
-            $next_transaction['data_tanggal'][] = "{$i}-{$next_month}-{$next_year}";
+            $next['data_tanggal'][] = "{$i}-{$next_month}-{$next_year}";
         }
-        $status_transaction                         = $this->M_Status->whereIn('id', [StatusTransaksi::MENUNGGU_PEMBAYARAN, StatusTransaksi::TRANSAKSI_BERHASIL])->pluck('status', 'id');
-        $this->response['data']['status_transaksi'] = $status_transaction;
-        $this->response['data']['next_transaction'] = $next_transaction;
-        $this->response['data']['data_perusahaan']  = $format_transaction['data_perusahaan'];
+        $data_status                               = StatusTransaksi::TRANSAKSI_BERHASIL;
+        $this->response['data']['status']          = $data_status;
+        $this->response['data']['next']            = $next;
+        $this->response['data']['data_perusahaan'] = $track_transaksi['client'];
         return view('transaksi.tambah', $this->response);
     }
     public function ubah($client_id)
@@ -160,26 +164,37 @@ class Transaksi extends MY_Controller
     public function getFormPemakaian()
     {
         $client_id = $this->input->post('id');
-        $this->jGetFormPemakaian($client_id);
+        $this->getJsonTambahTransaksi($client_id);
     }
-    private function jGetFormPemakaian($client_id)
+    private function getJsonTambahTransaksi($client_id)
     {
-        $data_client        = $this->M_Client->findOrFail($client_id);
-        $format_transaction = $this->formatLastTransaction($client_id);
-        $last_transaction   = $format_transaction['last_transaction'];
-        if ($last_transaction['status'] != StatusTransaksi::TRANSAKSI_BERHASIL) {
-            redirect('transaksi');
+        $this->load->library('TrackTransaksi', ['client_id' => $client_id]);
+        $track_transaksi   = $this->tracktransaksi->generate();
+        $keterangan_client = $track_transaksi['keterangan_periode'];
+
+        if (!in_array($keterangan_client, [KeteranganPeriode::BELUM_PERIODE_INI, KeteranganPeriode::BELUM_PERIODE_SEBELUMNYA])) {
+            echo "<script>alert('maaf tidak boleh masuk')</script>";
+            die();
         }
-        $next_transaction                = $format_transaction['next_transaction'];
-        $next_month                      = $next_transaction['bulan'];
-        $next_year                       = $next_transaction['tahun'];
-        $total_days                      = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);
-        $next_transaction['jumlah_hari'] = $total_days;
+        $next                = $track_transaksi['next'];
+        $next_month          = $next['bulan'];
+        $next_year           = $next['tahun'];
+        $total_days          = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);
+        $next['jumlah_hari'] = $total_days;
         for ($i = 1; $i <= $total_days; $i++) {
-            $next_transaction['data_tanggal'][] = "{$i}-{$next_month}-{$next_year}";
+            $next['data_tanggal'][] = "{$i}-{$next_month}-{$next_year}";
         }
-        $next_transaction['meteran_akhir'] = $data_client->meteran_akhir;
-        $response['next_transaction']      = $next_transaction;
+
+        $next                = $track_transaksi['next'];
+        $next_month          = $next['bulan'];
+        $next_year           = $next['tahun'];
+        $total_days          = cal_days_in_month(CAL_GREGORIAN, $next_month, $next_year);
+        $next['jumlah_hari'] = $total_days;
+        for ($i = 1; $i <= $total_days; $i++) {
+            $next['data_tanggal'][] = "{$i}-{$next_month}-{$next_year}";
+        }
+        $response['next']                  = $next;
+        $response['next']['meteran_akhir'] = $track_transaksi['client']->meteran_akhir;
         $this->output
         ->set_content_type('application/json')
         ->set_output(json_encode($response));
@@ -203,14 +218,14 @@ class Transaksi extends MY_Controller
         $dt->edit('status', function ($data) {
             $status = strtoupper($data['status']);
 
-            $html = $status;
+            $html          = $status;
             $linkToForward = base_url("transaksi/forward/{$data['client_id']}");
 
             if (in_array($data['status_id'], [1, 4])) {
                 $html = "
                 <button type=\"button\" class=\"btn  btn-sm btn-outline-info\" onclick=\"location.href='{$linkToForward}'\">{$status}</button>
                 ";
-            } 
+            }
             return $html;
         });
         $dt->edit('periode', function ($data) {
@@ -220,8 +235,7 @@ class Transaksi extends MY_Controller
             return $data['biaya'] == null ? '-' : hRupiah($data['biaya']);
         });
         $dt->add('action', function ($data) {
-            $html          = '';
-
+            $html = '';
 
             $html .= "
             <button type=\"button\" class=\"btn  btn-sm btn-outline-primary\" onClick=\"showDetaiTransaksi('{$data['id']}',1)\">
@@ -252,16 +266,19 @@ class Transaksi extends MY_Controller
         $config                   = $this->M_Config->first();
         $total_days               = count($post['input-tanggal']);
         $meteran_awal             = $post['input-meter_awal'][0];
-        $post['meteran_awal']     = $meteran_awal;
+        $post['meteran_awal']     =  (int) $meteran_awal;
         $meteran_akhir            = $post['input-meter_akhir'][$total_days - 1];
-        $post['meteran_akhir']    = $meteran_akhir;
+        $post['meteran_akhir']    = (int) $meteran_akhir;
         $pemakaian                = $meteran_akhir - $meteran_awal;
-        $post['biaya']            = $config->harga_per_watt * $pemakaian;
         $post_tahun               = $post['input-periode_tahun'];
         $post_bulan               = $post['input-periode_bulan'];
         $post['periode']          = Carbon::createFromFormat('Y-m', "{$post_tahun}-{$post_bulan}")->endOfMonth()->format('Y-m-d');
         $post['harga_per_watt']   = $config->harga_per_watt;
-        $post['waktu_verifikasi'] = $post['input-status'] >= StatusTransaksi::MENUNGGU_PEMBAYARAN ? Carbon::now() : null;
+        $post['waktu_input'] = Carbon::createFromFormat('d-m-Y H:i:s', $post['input-waktu_input']);
+        $post['waktu_verifikasi'] = Carbon::createFromFormat('d-m-Y H:i:s', $post['input-waktu_verifikasi']);
+        $post['waktu_mulai_pembayaran'] = Carbon::createFromFormat('d-m-Y H:i:s', $post['input-waktu_mulai_pembayaran']);
+        $post['biaya'] = $post['input-biaya'];
+        $post['input-status'] = StatusTransaksi::TRANSAKSI_BERHASIL;
         $post_transaction         = array
         (
             'client_id'           => $post['input-client_id'],
@@ -270,9 +287,10 @@ class Transaksi extends MY_Controller
             'harga_per_watt'      => $post['harga_per_watt'],
             'meteran_awal'        => $post['meteran_awal'],
             'meteran_akhir'       => $post['meteran_akhir'],
+            'waktu_input'         => $post['waktu_input'],
             'waktu_verifikasi'    => $post['waktu_verifikasi'],
+            'waktu_mulai_pembayaran'    => $post['waktu_mulai_pembayaran'],
             'status_transaksi_id' => $post['input-status'],
-            'waktu_input'         => Carbon::now(),
         );
         DB::beginTransaction();
         try {
@@ -538,28 +556,28 @@ class Transaksi extends MY_Controller
         }
         $client = $data_transaction->dataClient;
 
-        $tanggal_mulai_periode = $data_transaction->periode->copy()->modify('first day of next month');
-        $waktu_input           = $data_transaction->waktu_input;
-        $waktu_verifikasi      = $data_transaction->waktu_verifikasi;
-        $waktu_mulai_pembayaran      = $data_transaction->waktu_mulai_pembayaran;
-        $waktu_pembayaran      = $data_transaction->waktu_pembayaran;
-        $config                = $this->M_Config->first();
-        $tanggal_batas_input   = $tanggal_mulai_periode->copy()->addDays($config->batas_input);
-        $now                   = $data_transaction->waktu_pembayaran;
-        $jumlah_hari_bayar     = $now->diffInDays($waktu_mulai_pembayaran);
-        $jumlah_pemakaian      = $data_transaction->meteran_akhir - $data_transaction->meteran_awal;
-        $biaya_bersih          = $jumlah_pemakaian * $config->harga_per_watt;
-        $denda_input           = $tanggal_batas_input < $waktu_input ? ($biaya_bersih * $config->denda_input) : 0;
-        $kali_denda_bayar      = round($jumlah_hari_bayar / $config->batas_bayar);
-        $denda_bayar           = ($config->denda_bayar * $biaya_bersih) * $kali_denda_bayar;
-        $biaya_seluruhnya      = $biaya_bersih + $denda_input + $denda_bayar;
-        $output                = array(
+        $tanggal_mulai_periode  = $data_transaction->periode->copy()->modify('first day of next month');
+        $waktu_input            = $data_transaction->waktu_input;
+        $waktu_verifikasi       = $data_transaction->waktu_verifikasi;
+        $waktu_mulai_pembayaran = $data_transaction->waktu_mulai_pembayaran;
+        $waktu_pembayaran       = $data_transaction->waktu_pembayaran;
+        $config                 = $this->M_Config->first();
+        $tanggal_batas_input    = $tanggal_mulai_periode->copy()->addDays($config->batas_input);
+        $now                    = $data_transaction->waktu_pembayaran;
+        $jumlah_hari_bayar      = $now->diffInDays($waktu_mulai_pembayaran);
+        $jumlah_pemakaian       = $data_transaction->meteran_akhir - $data_transaction->meteran_awal;
+        $biaya_bersih           = $jumlah_pemakaian * $config->harga_per_watt;
+        $denda_input            = $tanggal_batas_input < $waktu_input ? ($biaya_bersih * $config->denda_input) : 0;
+        $kali_denda_bayar       = round($jumlah_hari_bayar / $config->batas_bayar);
+        $denda_bayar            = ($config->denda_bayar * $biaya_bersih) * $kali_denda_bayar;
+        $biaya_seluruhnya       = $biaya_bersih + $denda_input + $denda_bayar;
+        $output                 = array(
             'success'                 => 1,
             'client_id'               => $client->id,
             'periode'                 => $tanggal_mulai_periode->copy()->modify('last day of previous month'),
             'waktu_input'             => $waktu_input,
             'waktu_verifikasi'        => $waktu_verifikasi,
-            'waktu_mulai_pembayaran'        => $waktu_mulai_pembayaran,
+            'waktu_mulai_pembayaran'  => $waktu_mulai_pembayaran,
             'waktu_pembayaran'        => $waktu_pembayaran,
             'tanggal_batas_input'     => $tanggal_batas_input,
             'jumlah_hari_bayar'       => $jumlah_hari_bayar,
@@ -576,6 +594,51 @@ class Transaksi extends MY_Controller
             'hari_batas_bayar'        => $config->batas_bayar,
         );
         return $output;
+    }
+
+    public function getBiayaTransaksi()
+    {
+        $post = $this->input->post();
+        $client_id = $post['client_id'];
+        $this->load->library('TrackTransaksi', ['client_id' => $client_id]);
+        $track_transaksi = $this->tracktransaksi->generate();
+        $periode = $track_transaksi['next']['periode'];
+        $bulan_pembayaran = $periode->copy()->modify('first day of next month');
+        $waktu_input      = Carbon::now();
+        $waktu_verifikasi = Carbon::now();
+        $config           = $this->M_Config->first();
+        $batas_bayar      = $bulan_pembayaran->copy()->addDays($config->batas_input-1);
+        $tanggal_batas_input    = $periode->copy()->addDays($config->batas_input-1);
+
+        if ($waktu_input < $batas_bayar) {
+            $waktu_bayar = $waktu_input;
+        } else {
+            $waktu_bayar = $batas_bayar;
+        }
+        $meteran_akhir = $post['meteran_akhir'];
+        $meteran_awal = $post['meteran_awal'];
+        $jumlah_hari_bayar      = $waktu_input->diffInDays($waktu_bayar);
+        $jumlah_pemakaian       = $meteran_akhir - $meteran_awal;
+        $biaya_bersih           = $jumlah_pemakaian * $config->harga_per_watt;
+        $denda_input            = $tanggal_batas_input < $waktu_input ? ($biaya_bersih * $config->denda_input) : 0;
+        $kali_denda_bayar       = round($jumlah_hari_bayar / $config->batas_bayar);
+        $denda_bayar            = ($config->denda_bayar * $biaya_bersih) * $kali_denda_bayar;
+        $biaya_seluruhnya       = $biaya_bersih + $denda_input + $denda_bayar;
+
+        $output = [
+            'waktu_input' => $waktu_input->format('d-m-Y H:i:s'),
+            'waktu_verifikasi' => $waktu_verifikasi->format('d-m-Y H:i:s'),
+            'waktu_bayar' => $waktu_bayar->format('d-m-Y H:i:s'),
+            'biaya_bersih' => hRupiah($biaya_bersih),
+            'denda_input' => hRupiah($denda_input),
+            'denda_bayar' => hRupiah($denda_bayar),
+            'biaya_seluruhnya' => hRupiah($biaya_seluruhnya),
+            'biaya_seluruhnya_angka' => ($biaya_seluruhnya),
+        ];
+
+        $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode($output));
     }
 }
 /* End of file Transaksi.php */

@@ -101,6 +101,16 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade " id="modalContentPrint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	<div class="modal-dialog modal-xl"  role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				
+			</div>
+		</div>
+	</div>
+</div>
+<iframe id="iframe-print"></iframe>
 @endsection
 @section('js-export')
 <!-- DataTables -->
@@ -183,6 +193,14 @@
 		})
 		.catch((error) => {
 		});
+
+	}
+	function printTransaksi(id) {
+		$("<iframe>")                            
+		.hide()                              
+		.attr("src", "{{ base_url('client-transaksi/printIframe?transaksi_id=') }}"+id)
+		.appendTo("body");                   
+
 
 	}
 </script>
