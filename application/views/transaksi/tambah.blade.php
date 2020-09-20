@@ -1,159 +1,159 @@
 @extends('layouts.layout')
 @section('css-export')
-<style>
-	.bersinar {
-		background-color: red;
-	}
-</style>
 @endsection
 @section('content')
-<div class="page-header">
-	<h1 class="page-title">
-		Tambah Transaksi
-	</h1>
-</div>
-<div class="row row-cards row-deck">
-	<div class="col-12">
-		<div class="card">
-			<!-- /.card-header -->
-			<!-- form start -->
-			<div class="card-body">
-				<form enctype="multipart/form-data" id="form-transaksi" method="GET">
-					<input name="input-client_id" type="hidden" value="{{ $data['data_perusahaan']['id'] }}">
-					<input name="input-periode_bulan" type="hidden" value="{{ $data['next']['bulan'] }}">
-					<input name="input-periode_tahun" type="hidden" value="{{ $data['next']['tahun'] }}">
-					<input name="input-waktu_input" type="hidden" value="">
-					<input name="input-waktu_verifikasi" type="hidden" value="">
-					<input name="input-waktu_mulai_pembayaran" type="hidden" value="">
-					<input name="input-biaya" type="hidden" value="">
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+				<h1>
+					Tambah Transaksi
+				</h1>
+			</div>
+		</div>
+	</div>
+	<!-- /.container-fluid -->
+</section>
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body">
+						<form enctype="multipart/form-data" id="form-transaksi" method="GET">
+							<input name="input-client_id" type="hidden" value="{{ $data['data_perusahaan']['id'] }}">
+							<input name="input-periode_bulan" type="hidden" value="{{ $data['next']['bulan'] }}">
+							<input name="input-periode_tahun" type="hidden" value="{{ $data['next']['tahun'] }}">
+							<input name="input-waktu_input" type="hidden" value="">
+							<input name="input-waktu_verifikasi" type="hidden" value="">
+							<input name="input-waktu_mulai_pembayaran" type="hidden" value="">
+							<input name="input-biaya" type="hidden" value="">
+							<div class="form-group">
+								<label class="form-label">
+									Nama Perusahaan
+								</label>
+								<input class="form-control" disabled="" name="input-nama_perusahaan" type="text" value="{{ $data['data_perusahaan']['nama_perusahaan'] }}">
+							</input>
+						</div>
+						<div class="form-group">
+							<label class="form-label">
+								Periode Bulan
+							</label>
+							<input class="form-control" disabled="" name="" type="text" value="{{ $data['next']['bulan_huruf'] }}">
+						</input>
+					</div>
 					<div class="form-group">
 						<label class="form-label">
-							Nama Perusahaan
+							Periode Tahun
 						</label>
-						<input class="form-control" disabled="" name="input-nama_perusahaan" type="text" value="{{ $data['data_perusahaan']['nama_perusahaan'] }}">
+						<input class="form-control" disabled="" name="" type="text" value="{{ $data['next']['tahun'] }}">
 					</input>
 				</div>
 				<div class="form-group">
 					<label class="form-label">
-						Periode Bulan
+						Scan Meteran
 					</label>
-					<input class="form-control" disabled="" name="" type="text" value="{{ $data['next']['bulan_huruf'] }}">
+					<input class="form-control" id="file_meteran" name="file_meteran" type="file">
 				</input>
+			</div>
+			<table class="table table-bordered">
+				<tr>
+					<th>
+						Tanggal
+					</th>
+					<th>
+						Meter Awal
+					</th>
+					<th>
+						Meter Akhir
+					</th>
+					<th>
+						Pemakaian
+					</th>
+				</tr>
+				<tbody id="content-transaksi">
+				</tbody>
+			</table>
+			<table class="table table-bordered table-hover">
+				<tr>
+					<th width="50%">
+						Tanggal Input
+					</th>
+					<td>
+						<span class="set-data-span" id="waktu_input">
+							: -
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th width="50%">
+						Tanggal Konfirmasi
+					</th>
+					<td>
+						<span class="set-data-span" id="waktu_verifikasi">
+							: -
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th width="50%">
+						Biaya Pemakaian
+					</th>
+					<td>
+						<span class="set-data-span" id="biaya_bersih">
+							: -
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th width="50%">
+						Denda Telat Input
+					</th>
+					<td>
+						<span class="set-data-span" id="denda_input">
+							: -
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th width="50%">
+						Denda Telat Bayar
+					</th>
+					<td>
+						<span class="set-data-span" id="denda_bayar">
+							: -
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<th width="50%">
+						Total yang harus dibayar
+					</th>
+					<td>
+						<span class="set-data-span" id="total_biaya">
+							: -
+						</span>
+					</td>
+				</tr>
+			</table>
+			<div class="form-group">
+				<button class="btn btn-primary" id="btn-cek-biaya" type="button">
+					Cek Biaya
+				</button>
 			</div>
 			<div class="form-group">
 				<label class="form-label">
-					Periode Tahun
+					Scan Pembayaran
 				</label>
-				<input class="form-control" disabled="" name="" type="text" value="{{ $data['next']['tahun'] }}">
+				<input class="form-control" id="file_pembayaran" name="file_pembayaran" type="file">
 			</input>
 		</div>
 		<div class="form-group">
-			<label class="form-label">
-				Scan Meteran
-			</label>
-			<input class="form-control" id="file_meteran" name="file_meteran" type="file">
-		</input>
-	</div>
-	<table class="table table-bordered">
-		<tr>
-			<th>
-				Tanggal
-			</th>
-			<th>
-				Meter Awal
-			</th>
-			<th>
-				Meter Akhir
-			</th>
-			<th>
-				Pemakaian
-			</th>
-			<th>
-				Action
-			</th>
-		</tr>
-		<tbody id="content-transaksi">
-		</tbody>
-	</table>
-	<table class="table table-bordered table-hover">
-		<tr>
-			<th width="50%">
-				Tanggal Input
-			</th>
-			<td>
-				<span class="set-data-span" id="waktu_input">
-					: -
-				</span>
-			</td>
-		</tr>
-		<tr>
-			<th width="50%">
-				Tanggal Konfirmasi
-			</th>
-			<td>
-				<span class="set-data-span" id="waktu_verifikasi">
-					: -
-				</span>
-			</td>
-		</tr>
-		<tr>
-			<th width="50%">
-				Biaya Pemakaian
-			</th>
-			<td>
-				<span class="set-data-span" id="biaya_bersih">
-					: -
-				</span>
-			</td>
-		</tr>
-		<tr>
-			<th width="50%">
-				Denda Telat Input
-			</th>
-			<td>
-				<span class="set-data-span" id="denda_input">
-					: -
-				</span>
-			</td>
-		</tr>
-		<tr>
-			<th width="50%">
-				Denda Telat Bayar
-			</th>
-			<td>
-				<span class="set-data-span" id="denda_bayar">
-					: -
-				</span>
-			</td>
-		</tr>
-		<tr>
-			<th width="50%">
-				Total yang harus dibayar
-			</th>
-			<td>
-				<span class="set-data-span" id="total_biaya">
-					: -
-				</span>
-			</td>
-		</tr>
-	</table>
-	<div class="form-group">
-		<button class="btn btn-primary" id="btn-cek-biaya" type="button">
-			Cek Biaya
-		</button>
-	</div>
-	<div class="form-group">
-		<label class="form-label">
-			Scan Pembayaran
-		</label>
-		<input class="form-control" id="file_pembayaran" name="file_pembayaran" type="file">
+			<button class="btn btn-primary" id="btn-submit" type="button">
+				Submit
+			</button>
+		</div>
 	</input>
-</div>
-<div class="form-group">
-	<button class="btn btn-primary" id="btn-submit" type="button">
-		Submit
-	</button>
-</div>
 </input>
 </input>
 </input>
@@ -165,6 +165,9 @@
 </div>
 </div>
 </div>
+</div>
+</section>
+
 @endsection
 @section('js-export')
 

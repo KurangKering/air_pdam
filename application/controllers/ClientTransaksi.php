@@ -420,7 +420,7 @@ class ClientTransaksi extends MY_Controller
         $periode_filename = $post['periode']->copy()->format('Y-m');
 
         $filename     = "file-meteran-{$client_id}-{$periode_filename}";
-        $file_meteran = $this->uploadmanager->uploadMeteran('file_meteran', $filename, 'file-meteran-1-2020-07.jpg');
+        $file_meteran = $this->uploadmanager->uploadMeteran('file_meteran', $filename);
 
         if ($file_meteran['success'] == 'Y') {
             $post_transaction['file_meteran'] = $file_meteran['upload_data']['file_name'];

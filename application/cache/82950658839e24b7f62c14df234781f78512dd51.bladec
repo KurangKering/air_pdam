@@ -1,22 +1,24 @@
 <?php $_shouldextend[1]=1; ?>
 <?php $this->startSection('css-export'); ?>
-<style>
-	.bersinar {
- background-color: red;
-	}
-</style>
 <?php $this->stopSection(); ?>
 <?php $this->startSection('content'); ?>
-<div class="page-header">
-	<h1 class="page-title">
+<section class="content-header">
+	<div class="container-fluid">
+ <div class="row mb-2">
+ <div class="col-sm-6">
+ <h1>
  Tambah Transaksi
-	</h1>
-</div>
-<div class="row row-cards row-deck">
-	<div class="col-12">
+ </h1>
+ </div>
+ </div>
+	</div>
+	<!-- /.container-fluid -->
+</section>
+<section class="content">
+	<div class="container-fluid">
+ <div class="row">
+ <div class="col-12">
  <div class="card">
- <!-- /.card-header -->
- <!-- form start -->
  <div class="card-body">
  <form enctype="multipart/form-data" id="form-transaksi" method="GET">
  <input name="input-client_id" type="hidden" value="<?php echo static::e($data['data_perusahaan']['id']); ?>">
@@ -53,8 +55,8 @@
  </label>
  <input class="form-control" id="file_meteran" name="file_meteran" type="file">
  </input>
-	</div>
-	<table class="table table-bordered">
+ </div>
+ <table class="table table-bordered">
  <tr>
  <th>
  Tanggal
@@ -68,14 +70,11 @@
  <th>
  Pemakaian
  </th>
- <th>
- Action
- </th>
  </tr>
  <tbody id="content-transaksi">
  </tbody>
-	</table>
-	<table class="table table-bordered table-hover">
+ </table>
+ <table class="table table-bordered table-hover">
  <tr>
  <th width="50%">
  Tanggal Input
@@ -136,24 +135,25 @@
  </span>
  </td>
  </tr>
-	</table>
-	<div class="form-group">
+ </table>
+ <div class="form-group">
  <button class="btn btn-primary" id="btn-cek-biaya" type="button">
  Cek Biaya
  </button>
-	</div>
-	<div class="form-group">
+ </div>
+ <div class="form-group">
  <label class="form-label">
  Scan Pembayaran
  </label>
  <input class="form-control" id="file_pembayaran" name="file_pembayaran" type="file">
-	</input>
-</div>
-<div class="form-group">
-	<button class="btn btn-primary" id="btn-submit" type="button">
+ </input>
+ </div>
+ <div class="form-group">
+ <button class="btn btn-primary" id="btn-submit" type="button">
  Submit
-	</button>
-</div>
+ </button>
+ </div>
+	</input>
 </input>
 </input>
 </input>
@@ -165,6 +165,9 @@
 </div>
 </div>
 </div>
+</div>
+</section>
+
 <?php $this->stopSection(); ?>
 <?php $this->startSection('js-export'); ?>
 

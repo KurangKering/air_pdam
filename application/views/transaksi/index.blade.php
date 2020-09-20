@@ -16,7 +16,7 @@
 			</div>
 			<div class="col-sm-6" style="text-align: right">
 				<button  data-toggle="modal" data-target="#modalLookupClient" class="btn btn-primary">Cek Transaksi</button>
-				<button  onclick="location.href='{{ base_url("transaksi/tambah") }}'" class="btn btn-primary">Tambah Transaksi</button>
+				
 			</div>
 		</div>
 	</div><!-- /.container-fluid -->

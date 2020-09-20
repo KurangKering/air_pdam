@@ -1,12 +1,12 @@
 
 <?php 
-$arrBelum = ['belum_periode_ini', 'belum_periode_sebelumnya'];
+$arrBelum = [KeteranganPeriode::BELUM_PERIODE_INI, KeteranganPeriode::BELUM_PERIODE_SEBELUMNYA];
 $arrPending = ['pending_periode_ini','pending_periode_sebelumnya'];
 $arrEmpty = ['empty'];
 $arrSuccess = ['success'];
  ?>
 <div class="row">
-	<div class="col-4">
+	<div class="col-12">
  <div class="card ">
 
  <div class="card-body">
@@ -28,9 +28,8 @@ $arrSuccess = ['success'];
  </div>
  </div>
 	</div>
-	<div class="col-8">
- <div class="row">
- <div class="col-md-6">
+
+	<div class="col-md-6">
  <div class="card ">
  <div class="card-header">
  <div class="card-title">
@@ -70,8 +69,8 @@ $arrSuccess = ['success'];
 
  </div>
  </div>
- </div>
- <div class="col-md-6">
+	</div>
+	<div class="col-md-6">
  <div class="card ">
  <div class="card-header">
  <div class="card-title">
@@ -90,21 +89,21 @@ $arrSuccess = ['success'];
  </tr>
 
  </table>
+ <?php if(in_array($status, $arrBelum)): ?>
+ <button type="button" class="btn btn-info btn-block" id="btn-tambah">Tambah Transaksi</button>
+ <?php endif; ?>
  <div class="d-flex">
  <div class="ml-auto">
+ 
 
-
- <?php if(in_array($status, $arrBelum) && 1 == 2): ?>
- <button type="button" class="btn btn-info">Tambah Transaksi</button>
- <?php endif; ?>
+ 
  </div>
 
- </div>
- </div>
  </div>
  </div>
  </div>
 	</div>
+
 </div>
 
 
@@ -114,6 +113,10 @@ $arrSuccess = ['success'];
  $(".btn-update").click(function(e) {
 
  window.location.href= "<?php echo static::e(base_url('transaksi/ubah/').$client_id); ?>";
+ });
+
+ $("#btn-tambah").click(function(event) {
+ window.location.href= "<?php echo static::e(base_url('transaksi/tambah/').$client_id); ?>";
  });
 	});
 </script>
